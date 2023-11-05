@@ -19,7 +19,7 @@ router.put('/:id', updateProduct)
 router.get('/', getProducts)
 
 // GET PRODUCT BY ID
-router.get('/products/:id', getProduct)
+router.get('/:id', getProduct)
 
 // DELETE PRODUCT
 router.delete('/:id', deleteProduct)
