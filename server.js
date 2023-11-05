@@ -1,7 +1,10 @@
+require('dotenv').config()
 const express = require('express')
 const mongoose = require('mongoose')
 const Product = require('./models/productModel')
 const app = express()
+
+const { MONGO_URL, PORT } = process.env
 
 app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
@@ -96,15 +99,15 @@ app.delete('/products/:id', async (req, res) => {
 })
 
 mongoose
-  .connect(
-    'mongodb+srv://farym:weh0say@cluster0.xgn3r2l.mongodb.net/ownApi?retryWrites=true&w=majority'
-  )
+  .connect(MONGO_URL)
   .then(() => {
     console.log('connected to MongoDB')
 
     // main app init
-    app.listen(3000, () => {
-      console.log('Node API app running')
+    app.listen(PORT, () => {
+      console.log(
+        'Node API app running on port ' + PORT
+      )
     })
   })
   .catch((error) => {
