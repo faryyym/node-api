@@ -11,7 +11,7 @@ app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
 
 // routes
-app.use('/api', productRoute)
+app.use('/api/products', productRoute)
 
 app.get('/', (request, response) => {
   response.send('Hello Node API')

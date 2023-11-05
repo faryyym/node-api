@@ -1,88 +1,27 @@
 const express = require('express')
 const router = express.Router()
 const Product = require('../models/productModel')
+const {
+  getProducts,
+  updateProduct,
+  getProduct,
+  deleteProduct,
+  createProduct,
+} = require('../controllers/productController')
 
 // POST A PRODUCT
-router.post('/products', async (req, res) => {
-  try {
-    const product = await Product.create(req.body)
-    res.status(200).json(product)
-  } catch (error) {
-    console.log(error.message)
-    res.status(500).json({
-      message: error.message,
-    })
-  }
-})
+router.post('/', createProduct)
 
 // UPDATE A PRODUCT
-router.put('/products/:id', async (req, res) => {
-  try {
-    const { id } = req.params
-    const product =
-      await Product.findByIdAndUpdate(
-        id,
-        req.body
-      )
-    if (!product) {
-      return res.status(404).json({
-        message: `cannot find product with id ${id}`,
-      })
-    }
-    const updatedProduct = await Product.findById(
-      id
-    )
-    res.status(200).json(updatedProduct)
-  } catch (error) {
-    res.status(500).json({
-      error: error.message,
-    })
-  }
-})
+router.put('/:id', updateProduct)
 
 // GET ALL PRODUCTS
-router.get('/products', async (req, res) => {
-  try {
-    const products = await Product.find({})
-    res.status(200).json(products)
-  } catch (error) {
-    res.status(500).json({ error: error.message })
-  }
-})
+router.get('/', getProducts)
 
 // GET PRODUCT BY ID
-router.get('/products/:id', async (req, res) => {
-  try {
-    const { id } = req.params
-    const product = await Product.findById(id)
-    res.status(200).json(product)
-  } catch (error) {
-    res.status(500).json({
-      error: error.message,
-    })
-  }
-})
+router.get('/products/:id', getProduct)
 
 // DELETE PRODUCT
-router.delete(
-  '/products/:id',
-  async (req, res) => {
-    try {
-      const { id } = req.params
-      const product =
-        await Product.findByIdAndDelete(id)
-      if (!product) {
-        res.status(404).json({
-          message: `cannot find any product with id ${id}`,
-        })
-      }
-      res.status(200).json(product)
-    } catch (error) {
-      res
-        .status(500)
-        .json({ message: error.message })
-    }
-  }
-)
+router.delete('/:id', deleteProduct)
 
 module.exports = router
