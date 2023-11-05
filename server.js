@@ -4,6 +4,7 @@ const Product = require('./models/productModel')
 const app = express()
 
 app.use(express.json())
+app.use(express.urlencoded({ extended: false }))
 
 // routes
 app.get('/', (request, response) => {
@@ -14,6 +15,7 @@ app.get('/blog', (request, response) => {
   response.send('Blog Route ')
 })
 
+// POST A PRODUCT
 app.post('/products', async (req, res) => {
   try {
     const product = await Product.create(req.body)
@@ -26,6 +28,32 @@ app.post('/products', async (req, res) => {
   }
 })
 
+// UPDATE A PRODUCT
+app.put('/products/:id', async (req, res) => {
+  try {
+    const { id } = req.params
+    const product =
+      await Product.findByIdAndUpdate(
+        id,
+        req.body
+      )
+    if (!product) {
+      return res.status(404).json({
+        message: `cannot find product with id ${id}`,
+      })
+    }
+    const updatedProduct = await Product.findById(
+      id
+    )
+    res.status(200).json(updatedProduct)
+  } catch (error) {
+    res.status(500).json({
+      error: error.message,
+    })
+  }
+})
+
+// GET ALL PRODUCTS
 app.get('/products', async (req, res) => {
   try {
     const products = await Product.find({})
@@ -35,6 +63,7 @@ app.get('/products', async (req, res) => {
   }
 })
 
+// GET PRODUCT BY ID
 app.get('/products/:id', async (req, res) => {
   try {
     const { id } = req.params
@@ -44,6 +73,25 @@ app.get('/products/:id', async (req, res) => {
     res.status(500).json({
       error: error.message,
     })
+  }
+})
+
+// DELETE PRODUCT
+app.delete('/products/:id', async (req, res) => {
+  try {
+    const { id } = req.params
+    const product =
+      await Product.findByIdAndDelete(id)
+    if (!product) {
+      res.status(404).json({
+        message: `cannot find any product with id ${id}`,
+      })
+    }
+    res.status(200).json(product)
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: error.message })
   }
 })
 
